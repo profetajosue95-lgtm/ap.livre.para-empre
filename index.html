@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ministério Profético Assembleia Livre para Sempre — João 8:36</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+<div id="root"></div>
+
+<script type="text/babel">
+
+const { useState, useEffect, useMemo } = React;
+
+const Tabs = {
+  INICIO: "Início",
+  TESTEMUNHOS: "Testemunhos",
+  ORACAO: "Pedidos de Oração",
+  ANUNCIOS: "Anúncios",
+  GALERIA: "Galeria"
+};
+
+const versiculos = [
+  { texto: "O Senhor é o meu pastor; nada me faltará.", ref: "Salmos 23:1" },
+  { texto: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito…", ref: "João 3:16" },
+  { texto: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e firmes…", ref: "Jeremias 33:3" },
+  { texto: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13" }
+];
+
+const links = {
+  whatsapp: "https://chat.whatsapp.com/Jd82M7PDjTA9ncByxnVsB2?mode=ac_t",
+  facebook: "https://www.facebook.com/profile.php?id=61557266034012&mibextid=ZbWKwL",
+  youtube: "https://youtube.com/@livreparasempre4001?si=Sf4CZxpN4g9N96j3"
+};
+
+function NavBar({ current, onChange, darkMode, setDarkMode }) {
+  const items = Object.values(Tabs);
+  return (
+    <nav className="bg-blue-600 text-white shadow-md">
+      <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div>
+          <h1 className="font-bold text-lg">
+            Ministério Profético Assembleia Livre para Sempre
+          </h1>
+          <p className="text-sm italic">"Se, pois, o Filho vos libertar, verdadeiramente sereis livres" — João 8:36</p>
+        </div>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="bg-white text-blue-600 px-3 py-1 rounded-md text-sm"
+        >
+          {darkMode ? "Modo Claro" : "Modo Escuro"}
+        </button>
+      </div>
+      <div className="flex justify-center space-x-2 bg-blue-700 py-2">
+        {items.map(tab => (
+          <button
+            key={tab}
+            onClick={() => onChange(tab)}
+            className={`px-3 py-1 rounded ${current === tab ? "bg-white text-blue-700" : "hover:bg-blue-500"}`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function VersiculoDoDia() {
+  const versiculo = useMemo(() => versiculos[Math.floor(Math.random() * versiculos.length)], []);
+  return (
+    <div className="p-4 bg-blue-100 text-blue-900 rounded shadow">
+      <p className="text-lg">“{versiculo.texto}”</p>
+      <p className="text-sm mt-2">— {versiculo.ref}</p>
+    </div>
+  );
+}
+
+function Inicio() {
+  return (
+    <div className="space-y-4">
+      <VersiculoDoDia />
+      <div className="p-4 bg-white dark:bg-gray-800 rounded shadow">
+        <h2 className="text-xl font-bold mb-2">Informações da Igreja</h2>
+        <p><strong>Sede:</strong> Dundo, Bairro Aeroporto — Angola</p>
+        <p><strong>Líder:</strong> Profeta Josué Ricardo Alberto Balunga (desde 2021)</p>
+        <p><strong>Horários dos cultos:</strong></p>
+        <ul className="list-disc list-inside">
+          <li>Domingo: 9h às 12h</li>
+          <li>Terça: 16h às 18h</li>
+          <li>Sexta (Culto Profético): 16h às 18h</li>
+          <li>Sábado (Culto de Jovens)</li>
+        </ul>
+      </div>
+      <div className="grid sm:grid-cols-3 gap-4">
+        <a href={links.whatsapp} target="_blank" className="p-4 bg-green-500 text-white rounded shadow text-center">WhatsApp</a>
+        <a href={links.facebook} target="_blank" className="p-4 bg-blue-800 text-white rounded shadow text-center">Facebook</a>
+        <a href={links.youtube} target="_blank" className="p-4 bg-red-600 text-white rounded shadow text-center">YouTube</a>
+      </div>
+    </div>
+  );
+}
+
+function ListaComInput({ titulo, storageKey }) {
+  const [itens, setItens] = useState(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [texto, setTexto] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(itens));
+  }, [itens]);
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold">{titulo}</h2>
+      <form onSubmit={e => { e.preventDefault(); if (texto.trim()) { setItens([...itens, texto]); setTexto(""); } }} className="flex space-x-2">
+        <input value={texto} onChange={e => setTexto(e.target.value)} placeholder="Digite aqui..." className="flex-grow p-2 border rounded" />
+        <button type="submit" className="bg-blue-600 text-white px-4 rounded">Enviar</button>
+      </form>
+      <ul className="list-disc list-inside">
+        {itens.map((item, idx) => <li key={idx}>{item}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState(Tabs.INICIO);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
+
+  return (
+    <div>
+      <NavBar current={tab} onChange={setTab} darkMode={darkMode} setDarkMode={setDarkMode} />
+      <main className="max-w-5xl mx-auto p-4">
+        {tab === Tabs.INICIO && <Inicio />}
+        {tab === Tabs.TESTEMUNHOS && <ListaComInput titulo="Testemunhos" storageKey="testemunhos" />}
+        {tab === Tabs.ORACAO && <ListaComInput titulo="Pedidos de Oração" storageKey="oracoes" />}
+        {tab === Tabs.ANUNCIOS && <ListaComInput titulo="Anúncios" storageKey="anuncios" />}
+        {tab === Tabs.GALERIA && <p>Galeria de fotos em breve...</p>}
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+</body>
+</html>
