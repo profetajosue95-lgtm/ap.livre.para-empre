@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ministério Profético Assembleia Livre para Sempre — João 8:36</title>
+  <link rel="icon" type="image/png" href="Screenshot_20250705-085629_Facebook.jpg" />
+  <link rel="apple-touch-icon" href="Screenshot_20250705-085629_Facebook.jpg" />
+  <meta name="theme-color" content="#0b63ce" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* barra dourada fina no topo */
+    .barra-dourada { height: 6px; background: linear-gradient(90deg,#fbbf24,#f59e0b,#d97706); }
+  </style>
+</head>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <div class="barra-dourada"></div>
+  <div id="root"></div>
+
+<script type="text/babel">
+const {{ useState, useEffect, useMemo, useRef }} = React;
+
+const Tabs = {{
+  INICIO: "Início",
+  LIDER: "Líder",
+  TESTEMUNHOS: "Testemunhos",
+  ORACAO: "Pedidos de Oração",
+  ANUNCIOS: "Anúncios",
+  GALERIA: "Galeria"
+}};
+
+const links = {{
+  whatsapp: "https://chat.whatsapp.com/Jd82M7PDjTA9ncByxnVsB2?mode=ac_t",
+  facebook: "https://www.facebook.com/profile.php?id=61557266034012&mibextid=ZbWKwL",
+  youtube: "https://youtube.com/@livreparasempre4001?si=Sf4CZxpN4g9N96j3"
+}};
+
+const versiculos = [
+  {{ texto: "O Senhor é o meu pastor; nada me faltará.", ref: "Salmos 23:1" }},
+  {{ texto: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito…", ref: "João 3:16" }},
+  {{ texto: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e firmes…", ref: "Jeremias 33:3" }},
+  {{ texto: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13" }}
+];
+
+function TemaCentral() {{
+  return (
+    <div className="bg-blue-600 text-white">
+      <div className="max-w-6xl mx-auto px-4 py-6 flex items-center gap-4">
+        <img src="Screenshot_20250705-085629_Facebook.jpg" alt="Logo" className="w-14 h-14 rounded-full border-2 border-yellow-400 flex-shrink-0" />
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Ministério Profético Assembleia Livre para Sempre</h1>
+          <p className="text-sm sm:text-base italic opacity-90">"Se, pois, o Filho vos libertar, verdadeiramente sereis livres" — João 8:36</p>
+        </div>
+        <div className="hidden sm:flex gap-2">
+          <a href={links.whatsapp} target="_blank" className="px-3 py-1 rounded bg-green-500 text-white">WhatsApp</a>
+          <a href={links.facebook} target="_blank" className="px-3 py-1 rounded bg-blue-800 text-white">Facebook</a>
+          <a href={links.youtube} target="_blank" className="px-3 py-1 rounded bg-red-600 text-white">YouTube</a>
+        </div>
+      </div>
+      <div className="h-1 w-full bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700"></div>
+    </div>
+  );
+}}
+
+function NavBar({{ current, onChange, darkMode, setDarkMode }}) {{
+  const items = Object.values(Tabs);
+  return (
+    <nav className="bg-blue-700 text-white shadow-md sticky top-0 z-40">
+      <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
+        <span className="font-semibold">Menu</span>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="bg-white text-blue-700 px-3 py-1 rounded-md text-sm"
+        >
+          {{darkMode ? "Modo Claro" : "Modo Escuro"}}
+        </button>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2 bg-blue-800 px-4 py-2">
+        {{items.map(tab => (
+          <button
+            key={tab}
+            onClick={() => onChange(tab)}
+            className={\`px-3 py-1 rounded border-b-2 \${current === tab ? "bg-white text-blue-800 border-yellow-400 font-bold" : "hover:bg-blue-600 border-transparent"}\`}
+          >
+            {{tab}}
+          </button>
+        ))}}
+      </div>
+    </nav>
+  );
+}}
+
+function VersiculoDoDia() {{
+  const versiculo = useMemo(() => versiculos[Math.floor(Math.random() * versiculos.length)], []);
+  return (
+    <div className="p-4 bg-blue-50 text-blue-900 rounded shadow border-l-4 border-yellow-400">
+      <p className="text-lg leading-relaxed">“{{versiculo.texto}}”</p>
+      <p className="text-sm mt-2 font-semibold">— {{versiculo.ref}}</p>
+    </div>
+  );
+}}
+
+/* ======= SLIDER ======= */
+function ImageSlider() {{
+  const images = [
+    "Screenshot_20250705-085629_Facebook.jpg",
+    "IMG_20250810_113242_2.jpg"
+  ];
+  const [i, setI] = useState(0);
+  const timer = useRef(null);
+
+  useEffect(() => {{
+    timer.current = setInterval(() => setI(prev => (prev + 1) % images.length), 4000);
+    return () => clearInterval(timer.current);
+  }}, []);
+
+  const goto = (idx) => setI((idx + images.length) % images.length);
+
+  return (
+    <div className="relative w-full h-64 sm:h-80 overflow-hidden rounded-xl shadow-lg border-4 border-yellow-400">
+      <img src={{images[i]}} alt="Slide" className="w-full h-full object-cover" />
+      <button onClick={() => goto(i-1)} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 px-3 py-1 rounded">‹</button>
+      <button onClick={() => goto(i+1)} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 px-3 py-1 rounded">›</button>
+      <div className="absolute bottom-2 w-full flex justify-center gap-2">
+        {{images.map((_, idx) => (
+          <span key={idx} onClick={() => goto(idx)} className={\`w-2.5 h-2.5 rounded-full cursor-pointer \${i===idx ? "bg-yellow-400" : "bg-white/70"}\`}></span>
+        ))}}
+      </div>
+    </div>
+  );
+}}
+
+/* ======= INÍCIO ======= */
+function Inicio() {{
+  return (
+    <div className="space-y-6">
+      <div className="bg-white dark:bg-gray-800 rounded shadow p-4">
+        <ImageSlider />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="p-4 bg-white dark:bg-gray-800 rounded shadow">
+          <h3 className="text-3xl font-extrabold text-blue-700 mb-3">Horários dos Cultos</h3>
+          <ul className="space-y-2 text-xl">
+            <li><span className="font-bold text-yellow-600">Domingo:</span> 09h às 12h</li>
+            <li><span className="font-bold text-yellow-600">Terça:</span> 16h às 18h</li>
+            <li><span className="font-bold text-yellow-600">Sexta (Profético):</span> 16h às 18h</li>
+            <li><span className="font-bold text-yellow-600">Sábado (Jovens):</span> 15h</li>
+          </ul>
+        </div>
+        <VersiculoDoDia />
+      </div>
+
+      <div className="p-4 bg-blue-600 text-white rounded shadow">
+        <p className="text-center text-xl sm:text-2xl font-bold tracking-wide">
+          Tema Central: <span className="underline decoration-yellow-400 underline-offset-4">Libertação e Vida Abundante em Cristo</span>
+        </p>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-4">
+        <a href={links.whatsapp} target="_blank" className="p-4 bg-green-500 text-white rounded shadow text-center">WhatsApp</a>
+        <a href={links.facebook} target="_blank" className="p-4 bg-blue-800 text-white rounded shadow text-center">Facebook</a>
+        <a href={links.youtube} target="_blank" className="p-4 bg-red-600 text-white rounded shadow text-center">YouTube</a>
+      </div>
+    </div>
+  );
+}}
+
+/* ======= LÍDER ======= */
+function Lider() {{
+  return (
+    <div className="space-y-4 p-4 bg-white dark:bg-gray-800 rounded shadow">
+      <div className="flex flex-col items-center gap-4">
+        <img src="IMG_20250810_113242_2.jpg" alt="Líder" className="w-44 h-44 object-cover rounded-full border-4 border-yellow-400" />
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-blue-700">Profeta Josué Ricardo Alberto Balunga</h2>
+          <p className="italic">Fundador e líder espiritual (desde 2021)</p>
+        </div>
+      </div>
+      <p className="text-justify leading-relaxed">
+        O Ministério Profético Assembleia Livre para Sempre atua com foco em cura, libertação e proclamação do Evangelho,
+        conforme João 8:36. Seja bem-vindo(a) a viver o novo de Deus!
+      </p>
+    </div>
+  );
+}}
+
+/* ======= TESTEMUNHOS ======= */
+function Testemunhos() {{
+  const [lista, setLista] = useState(() => {{
+    const s = localStorage.getItem("testemunhos_v2");
+    return s ? JSON.parse(s) : [];
+  }});
+  const [form, setForm] = useState({{ nome: "", titulo: "", relato: "" }});
+
+  useEffect(() => localStorage.setItem("testemunhos_v2", JSON.stringify(lista)), [lista]);
+
+  const add = (e) => {{
+    e.preventDefault();
+    if(!form.relato.trim()) return;
+    setLista([{{ ...form, id: Date.now() }} , ...lista]);
+    setForm({{ nome: "", titulo: "", relato: "" }});
+  }};
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 bg-white dark:bg-gray-800 rounded shadow">
+        <h2 className="text-2xl font-bold text-blue-700 mb-3">Testemunhos de Cura e Libertação</h2>
+        <form onSubmit={add} className="grid gap-3">
+          <input value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})} placeholder="Seu nome (opcional)"
+                 className="p-2 rounded border" />
+          <input value={form.titulo} onChange={e=>setForm({...form,titulo:e.target.value})} placeholder="Título (ex.: Cura nas costas)"
+                 className="p-2 rounded border" />
+          <textarea value={form.relato} onChange={e=>setForm({...form,relato:e.target.value})} placeholder="Escreva seu testemunho"
+                 className="p-2 rounded border min-h-[120px]" />
+          <button className="bg-blue-700 text-white px-4 py-2 rounded self-start">Enviar</button>
+        </form>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {{lista.map(item => (
+          <article key={item.id} className="p-4 bg-white dark:bg-gray-800 rounded shadow border-t-4 border-yellow-400">
+            <h3 className="font-bold text-lg text-blue-700">{item.titulo || "Testemunho"}</h3>
+            <p className="text-sm text-gray-500">{item.nome || "Anônimo"}</p>
+            <p className="mt-2 whitespace-pre-wrap">{item.relato}</p>
+          </article>
+        ))}}
+        {{!lista.length && (
+          <p className="text-center col-span-full opacity-70">Ainda não há testemunhos. Seja o primeiro a compartilhar!</p>
+        )}}
+      </div>
+    </div>
+  );
+}}
+
+/* ======= ORAÇÕES / ANÚNCIOS ======= */
+function ListaComInput({{ titulo, storageKey }}) {{
+  const [itens, setItens] = useState(() => {{
+    const saved = localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved) : [];
+  }});
+  const [texto, setTexto] = useState("");
+
+  useEffect(() => {{
+    localStorage.setItem(storageKey, JSON.stringify(itens));
+  }}, [itens]);
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-blue-700">{titulo}</h2>
+      <form onSubmit={e => {{ e.preventDefault(); if (texto.trim()) {{ setItens([texto, ...itens]); setTexto(""); }} }}}
+            className="flex flex-col sm:flex-row gap-2">
+        <input value={texto} onChange={e => setTexto(e.target.value)} placeholder="Digite aqui..." className="flex-grow p-2 border rounded" />
+        <button type="submit" className="bg-blue-700 text-white px-4 py-2 rounded">Enviar</button>
+      </form>
+      <ul className="grid gap-2">
+        {{itens.map((item, idx) => (
+          <li key={idx} className="p-3 bg-white dark:bg-gray-800 rounded shadow border-l-4 border-yellow-400">{item}</li>
+        ))}}
+      </ul>
+    </div>
+  );
+}}
+
+/* ======= GALERIA (Facebook) ======= */
+function Galeria() {{
+  const [pageId, setPageId] = useState(localStorage.getItem("fb_pageId") || "61557266034012");
+  const [token, setToken] = useState(localStorage.getItem("fb_token") || "");
+  const [fotos, setFotos] = useState([]);
+  const [status, setStatus] = useState("");
+
+  const salvarCreds = () => {{
+    localStorage.setItem("fb_pageId", pageId);
+    localStorage.setItem("fb_token", token);
+  }};
+
+  const carregar = async () => {{
+    setStatus("Carregando fotos do Facebook...");
+    setFotos([]);
+    try {{
+      if(!token) {{
+        setStatus("⚠️ Insira um Access Token de leitura para carregar as fotos.");
+        return;
+      }}
+      const url = \`https://graph.facebook.com/v19.0/\${pageId}/photos?type=uploaded&fields=images,link,created_time&limit=12&access_token=\${encodeURIComponent(token)}\`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("Falha ao buscar fotos");
+      const data = await res.json();
+      const arr = (data.data || []).map(f => ({{ src: f.images?.[0]?.source, href: f.link }})).filter(x => x.src);
+      setFotos(arr);
+      setStatus(arr.length ? "" : "Nenhuma foto pública encontrada.");
+    }} catch(e) {{
+      console.error(e);
+      setStatus("❌ Erro ao carregar. Verifique o Page ID e o Token.");
+    }}
+  }};
+
+  useEffect(() => {{ if(token) carregar(); }}, []);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-4 bg-white dark:bg-gray-800 rounded shadow">
+        <h2 className="text-2xl font-bold text-blue-700 mb-2">Galeria de Fotos</h2>
+        <p className="text-sm opacity-80">Conecte sua página do Facebook para carregar automaticamente as fotos públicas.</p>
+        <div className="grid sm:grid-cols-3 gap-2 mt-3">
+          <label className="sm:col-span-1 flex flex-col text-sm">
+            Page ID
+            <input value={pageId} onChange={e=>setPageId(e.target.value)} className="p-2 rounded border" />
+          </label>
+          <label className="sm:col-span-2 flex flex-col text-sm">
+            Access Token (somente leitura)
+            <input value={token} onChange={e=>setToken(e.target.value)} className="p-2 rounded border" />
+          </label>
+        </div>
+        <div className="mt-3 flex gap-2">
+          <button onClick={()=>{salvarCreds(); carregar();}} className="bg-blue-700 text-white px-4 py-2 rounded">Salvar e Carregar</button>
+          <a href={links.facebook} target="_blank" className="px-4 py-2 rounded border">Abrir Página no Facebook</a>
+        </div>
+        {!!status && <p className="mt-3 text-sm">{status}</p>}
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {{fotos.length ? fotos.map((f,idx) => (
+          <a key={idx} href={f.href || "#"} target="_blank" className="block">
+            <img src={f.src} alt={"Foto "+(idx+1)} className="w-full h-40 object-cover rounded shadow" />
+          </a>
+        )) : (
+          <>
+            <img src="Screenshot_20250705-085629_Facebook.jpg" className="w-full h-40 object-cover rounded shadow" alt="Amostra 1" />
+            <img src="IMG_20250810_113242_2.jpg" className="w-full h-40 object-cover rounded shadow" alt="Amostra 2" />
+          </>
+        )}}
+      </div>
+    </div>
+  );
+}}
+
+/* ======= APP ======= */
+function App() {{
+  const [tab, setTab] = useState(Tabs.INICIO);
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {{ document.documentElement.classList.toggle("dark", darkMode); }}, [darkMode]);
+
+  return (
+    <div>
+      <TemaCentral />
+      <NavBar current={tab} onChange={setTab} darkMode={darkMode} setDarkMode={setDarkMode} />
+      <main className="max-w-6xl mx-auto p-4 space-y-6">
+        {{tab === Tabs.INICIO && <Inicio />}}
+        {{tab === Tabs.LIDER && <Lider />}}
+        {{tab === Tabs.TESTEMUNHOS && <Testemunhos />}}
+        {{tab === Tabs.ORACAO && <ListaComInput titulo="Pedidos de Oração" storageKey="oracoes_v2" />}}
+        {{tab === Tabs.ANUNCIOS && <ListaComInput titulo="Anúncios" storageKey="anuncios_v2" />}}
+        {{tab === Tabs.GALERIA && <Galeria />}}
+      </main>
+      <footer className="mt-10 py-6 text-center text-sm opacity-80">
+        © {{new Date().getFullYear()}} Ministério Profético Assembleia Livre para Sempre — João 8:36
+      </footer>
+    </div>
+  );
+}}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
